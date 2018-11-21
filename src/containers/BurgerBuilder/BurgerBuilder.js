@@ -5,6 +5,8 @@
  import Burger from '../../components/Burger/Burger'
 
  import BuildControlles from '../../components/Burger/BuildControlles/BuildControlles';
+ import Modal from '../../components/UI/Modal/Modal';
+ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 
  const INGREDIENT_PRICES = {
      salad: 0.5,
@@ -28,8 +30,13 @@
             meat: 0
         },
         totalPrice: 4,
-        purchasable: false
+        purchasable: false,
+        purchasing: false
 
+    }
+
+    purchaseHandler = () => {
+        this.setState({purchasing: true})
     }
 
     updatePurchaseState(ingredients) {
@@ -81,6 +88,15 @@
         this.updatePurchaseState(updatedIngredients);
 
     }
+
+    purchaseCancelHandler = () => {
+        this.setState({purchasing: false})
+    }
+
+    purchaseContinueHandler = () => {
+        alert('You continue!');
+    }
+
     render(){
 
         const disabledInfo = {
@@ -93,6 +109,14 @@
  
         return (
         <Aux>
+           <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+               <OrderSummary 
+                ingredients = {this.state.ingredients}
+                purchasedCancelled = {this.purchaseCancelHandler}
+                purchaseContinued= {this.purchaseContinueHandler}    
+                />
+
+           </Modal>
            <Burger ingredients= {this.state.ingredients}/>
             <BuildControlles  
                 ingredientAdded={this.addIngredientHandler}
@@ -100,6 +124,7 @@
                 disabled= {disabledInfo}
                 purchasable={this.state.purchasable}
                 price={this.state.totalPrice}
+                ordered={this.purchaseHandler}
             />
         </Aux>
         )
